@@ -1,0 +1,5 @@
+# graphql-book-storage
+
+## Tech Stack
+- graphql-server/ -> node js, express, graphql, graphql-yoga
+- 	graphql-client`

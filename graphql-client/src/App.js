@@ -1,23 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import { useQuery, gql } from '@apollo/client';
+import ListBooks from './Component/Books/ListBooks';
+import ListAuthors from './Component/Author/ListAuthor';
 
 function App() {
+  const GET_BOOKS = gql`
+    query GetBooks {
+      books {
+        name
+        description
+        image
+        genre
+        author {
+          name
+        }
+      }
+      authors {
+        name
+        age
+        rating
+      }
+    }
+  `;
+  const { loading, data, refetch } = useQuery(GET_BOOKS);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      style={{
+        margin: '40px',
+        padding: '10px'
+      }}
+    >
+      <ListBooks loading={loading} refetch={refetch} books={data?.books || []} />
+      <ListAuthors loading={loading} refetch={refetch} authors={data?.authors || []} />
     </div>
   );
 }

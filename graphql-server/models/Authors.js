@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const authorSchema = new Schema({
   name: String,
   age: String,
-  rating: mongoose.Decimal128
+  rating: String
 });
 
 module.exports = mongoose.model('Author', authorSchema);

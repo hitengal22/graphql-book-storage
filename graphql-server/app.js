@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const { createYoga } = require('graphql-yoga');
 const axios = require('axios');
 const { createHandler } = require('graphql-http/lib/use/express');
+const cors = require('cors');
 const schema = require('./schemas/schema');
 const Film = require('./models/Film');
 const People = require('./models/People');
 
 const app = express();
 const yoga = createYoga({ schema });
+app.use(cors());
 
 mongoose.connect('mongodb://127.0.0.1:27017/swapi')
   .then(async () => {

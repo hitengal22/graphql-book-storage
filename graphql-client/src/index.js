@@ -1,25 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import ListBooks from './Component/Books/ListBooks';
-import {
-  createBrowserRouter,
-  RouterProvider
-} from 'react-router-dom';
-import reportWebVitals from './reportWebVitals';
+import { RouterProvider } from 'react-router-dom';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { router } from './router';
+import reportWebVitals from './reportWebVitals';
+import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const client = new ApolloClient({
   uri: 'http://localhost:4200/graphql/',
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache()
 });
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <ListBooks />
-  }
-])
 
 root.render(
   <React.StrictMode>

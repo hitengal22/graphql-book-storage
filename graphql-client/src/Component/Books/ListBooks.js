@@ -1,29 +1,26 @@
-import { useQuery, gql } from '@apollo/client';
-import { Card, List, Layout } from 'antd';
-export default function ListBooks () {
-  const GET_BOOKS = gql`
-    query GetBooks{
-      books{
-        name
-        description
-        image
-        gener
-      }
-      authors{
-        name
-        age
-        rating
-      }
-    }
-  `
-  const { loading, data } = useQuery(GET_BOOKS);
+import { useState, useCallback } from 'react';
+import { Card, List, Layout, Button, Flex, Modal, Row, Col,  Image, Typography } from 'antd';
+import AddBook from './AddBooks';
+
+export default function ListBooks({ loading, books, refetch }) {
+  const [open, setOpen] = useState(false);
+  const { Meta } = Card
+  const showModal = useCallback(() => {
+    setOpen(true);
+  }, [setOpen]);
+
+  const handleCancel = useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
   return (
-    <div
-      style={{
-        margin: '40px',
-        padding: '10px'
-      }}
-    >
+    <>
+      <Flex stye={{ width: '100%' }} justify={`space-between`} align={`center`}>
+        <h2>Books</h2>
+        <Button type="primary" onClick={showModal}>
+          Add Books
+        </Button>
+      </Flex>
       <Layout
         style={{
           padding: '10px'
@@ -35,30 +32,34 @@ export default function ListBooks () {
             column: 4
           }}
           loading={loading}
-          dataSource={data?.books}
+          dataSource={books}
           renderItem={(item) => (
             <List.Item>
-              <Card title={item.name}>{item.description}</Card>
+              <Card
+                width={`auto`}
+                height={300}
+                cover={
+                  <Image src={item.image} alt="Book Image" height={300} width={`auto`} preview={false} />
+                }
+              >
+                <Meta
+                  title={(
+                    <>
+                      <span>{item?.name}</span><br />
+                      <span>{item?.author?.name}</span>
+                    </>
+                  )}
+                  description={item?.description}
+                />
+              </Card>
             </List.Item>
           )}
-        ></List>
+        />
       </Layout>
-      <Layout style={{ padding: '10px' }}>
-        <List
-          grid={{
-            gutter: 16,
-            column: 4
-          }}
-          loading={loading}
-          dataSource={data?.author}
-          renderItem={(item) => (
-            <List.Item>
-              <Card></Card>
-            </List.Item>
-          )}
-        >
-        </List>
-      </Layout>
-    </div>
-  )
+
+      <Modal open={open} title={`Add Book`} onCancel={handleCancel} footer={null}>
+        <AddBook onCloseModal={handleCancel} refetch={refetch} />
+      </Modal>
+    </>
+  );
 }
