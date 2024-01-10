@@ -62,10 +62,25 @@ const RootQuery = new GraphQLObjectType({
         return Book.find({});
       }
     },
+    book: {
+      type: BookType,
+      args: {
+        id: GraphQLID
+      },
+      resolve(parent, args){
+        return Book.findById(args?.id)
+      }
+    },
     authors:{
       type: new GraphQLList(AuthorType),
       resolve(parent, args) {
         return Author.find({})
+      }
+    },
+    author:{
+      type: AuthorType,
+      resolve(parent, args) {
+        return Author?.findById(args?.id)
       }
     }
   }
@@ -126,6 +141,64 @@ const Mutation = new GraphQLObjectType({
         });
 
         return book.save();
+      }
+    },
+    updateAuthor: {
+      type: AuthorType,
+      args: {
+        id: new GraphQLNonNull(GraphQLID),
+        name: GraphQLString,
+        age: GraphQLString,
+        rating: GraphQLString
+      },
+      resolve(parent, args){
+        const { name, age, rating } = args
+        return new Promise(async function(resolve){
+          const authorResponse = await Author.findByIdAndUpdate(args?.id, { name, age, rating });
+          return resolve(authorResponse);
+        })
+      }
+    },
+    updateBook: {
+      type: BookType,
+      args: {
+        id: new GraphQLNonNull(GraphQLID),
+        name: GraphQLString,
+        description: GraphQLString,
+        image: GraphQLString,
+        genre: GraphQLString,
+        authorId: GraphQLID
+      },
+      resolve(parent, args){
+        const { name, description, image, genre, authorId } = args;
+        return new Promise(async function(resolve){
+          const bookResponse = await Book.findByIdAndUpdate(args?.id, { name, description, image, genre, authorId });
+          return resolve(bookResponse);
+        });
+      }
+    },
+    deleteAuthor: {
+      type: AuthorType,
+      args: {
+        id: new GraphQLNonNull(GraphQLID)
+      },
+      resolve(parent, args){
+        return new Promise(async function(resolve){
+          const authorResponse = await Author.findByIdAndDelete(args?.id);
+          return resolve(authorResponse);
+        })
+      }
+    },
+    deleteBook: {
+      type: BookType,
+      args: {
+        id: new GraphQLNonNull(GraphQLID)
+      },
+      resolve(parent, args) {
+        return new Promise(async function(reslve){
+          const bookResponse = await Book.findByIdAndDelete(args?.id);
+          return resolve(bookResponse);
+        });
       }
     }
   }
