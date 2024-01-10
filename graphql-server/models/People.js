@@ -1,12 +1,14 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const peopleSchema = new Schema({
   birth_year: String,
   eye_color: String,
-  films: [{
-    type: String
-  }],
+  films: [
+    {
+      type: String,
+    },
+  ],
   gender: String,
   hair_color: String,
   height: String,
@@ -16,15 +18,21 @@ const peopleSchema = new Schema({
   skin_color: String,
   created: String,
   edited: String,
-  species: [{
-    type: String
-  }],
-  starships: [{
-    type: String
-  }],
+  species: [
+    {
+      type: String,
+    },
+  ],
+  starships: [
+    {
+      type: String,
+    },
+  ],
   url: String,
-  vehicles: [{
-    type: String
-  }]
+  vehicles: [
+    {
+      type: String,
+    },
+  ],
 });
-module.exports = mongoose.model('People', peopleSchema);
+module.exports = mongoose.model("People", peopleSchema);

@@ -5,10 +5,10 @@ const {
   GraphQLString,
   GraphQLID,
   GraphQLList,
-  GraphQLInt
-} = require('graphql');
-const FilmType = require('./Film');
-const Film = require('../models/Film');
+  GraphQLInt,
+} = require("graphql");
+const FilmType = require("./Film");
+const Film = require("../models/Film");
 
 const PeopleType = new GraphQLObjectType({
   name: "People",
@@ -33,18 +33,20 @@ const PeopleType = new GraphQLObjectType({
     filmsD: {
       type: new GraphQLList(FilmType),
       resolve(parent, args) {
-        const filmURL = parent.url
-        return new Promise(async function(resolve, reject) {
-          const res = await Film.aggregate([{
-            $match: {
-              characters: filmURL
-            }
-          }])
-          return resolve(res)
+        const filmURL = parent.url;
+        return new Promise(async function (resolve, reject) {
+          const res = await Film.aggregate([
+            {
+              $match: {
+                characters: filmURL,
+              },
+            },
+          ]);
+          return resolve(res);
         });
-      }
-    }
-  })
-})
+      },
+    },
+  }),
+});
 
-module.exports = PeopleType
+module.exports = PeopleType;

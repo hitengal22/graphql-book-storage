@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const bookSchema = new Schema({
@@ -8,8 +8,8 @@ const bookSchema = new Schema({
   genre: String,
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Author'
-  }
+    ref: "Author",
+  },
 });
 
-module.exports = mongoose.model('Book', bookSchema);
+module.exports = mongoose.model("Book", bookSchema);

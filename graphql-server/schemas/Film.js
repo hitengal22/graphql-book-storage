@@ -5,8 +5,8 @@ const {
   GraphQLString,
   GraphQLID,
   GraphQLList,
-  GraphQLInt
-} = require('graphql');
+  GraphQLInt,
+} = require("graphql");
 
 const FilmType = new GraphQLObjectType({
   name: "Film",
@@ -19,30 +19,30 @@ const FilmType = new GraphQLObjectType({
     producer: { type: GraphQLString },
     release_date: { type: GraphQLString },
     characters: {
-      type: new GraphQLList(GraphQLString)
+      type: new GraphQLList(GraphQLString),
     },
     planets: {
-      type: new GraphQLList(GraphQLString)
+      type: new GraphQLList(GraphQLString),
     },
     starships: {
-      type: new GraphQLList(GraphQLString)
+      type: new GraphQLList(GraphQLString),
     },
     vehicles: {
-      type: new GraphQLList(GraphQLString)
+      type: new GraphQLList(GraphQLString),
     },
     species: {
-      type: new GraphQLList(GraphQLString)
+      type: new GraphQLList(GraphQLString),
     },
     created: {
-      type: GraphQLString
+      type: GraphQLString,
     },
     edited: {
-      type: GraphQLString
+      type: GraphQLString,
     },
     url: {
-      type: GraphQLString
-    }
-  })
-})
+      type: GraphQLString,
+    },
+  }),
+});
 
-module.exports = FilmType
+module.exports = FilmType;
