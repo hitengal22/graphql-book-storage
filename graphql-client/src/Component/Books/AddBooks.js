@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { Form, Input, Select, Space, Button } from 'antd';
 
@@ -37,7 +37,7 @@ export default function AddBook({ onCloseModal, refetch }) {
     }
   `;
 
-  const [addBook, { loading: bookLoading, data: bookData, reset }] = useMutation(ADD_BOOK);
+  const [addBook, { loading: bookLoading, reset }] = useMutation(ADD_BOOK);
   const { loading: authorLoading, data: authors, refetch: refetchAuthors } = useQuery(GET_AUTHORS);
   const tailLayout = {
     wrapperCol: { offset: 6, span: 16 }
@@ -53,7 +53,6 @@ export default function AddBook({ onCloseModal, refetch }) {
   };
 
   useEffect(() => {
-    console.log('AUTHORS', authors?.authors);
     if (authors?.authors?.length > 0) {
       let authorsList = [];
       authors?.authors?.forEach((item) => {
@@ -94,6 +93,7 @@ export default function AddBook({ onCloseModal, refetch }) {
 
       <Form.Item label={`Genre`} name={`genre`} rules={[{ required: true }]}>
         <Select
+          loading={authorLoading}
           options={[
             {
               value: 'Fantacy',

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Card, List, Layout, Button, Flex, Modal, Row, Col,  Image, Typography } from 'antd';
+import { Card, List, Layout, Button, Flex, Modal, Image } from 'antd';
 import AddBook from './AddBooks';
 
 export default function ListBooks({ loading, books, refetch }) {
@@ -34,22 +34,32 @@ export default function ListBooks({ loading, books, refetch }) {
           loading={loading}
           dataSource={books}
           renderItem={(item) => (
-            <List.Item>
+            <List.Item style={{ height: 300 }}>
               <Card
-                width={`auto`}
-                height={300}
-                cover={
-                  <Image src={item.image} alt="Book Image" height={300} width={`auto`} preview={false} />
-                }
+                size={`small`}
+                style={{
+                  height: 300
+                }}
               >
                 <Meta
                   title={(
                     <>
-                      <span>{item?.name}</span><br />
-                      <span>{item?.author?.name}</span>
+                    <span>{item?.name}</span><br />
+                    <span style={{ fontWeight: 300, fontSize: '14px', color: 'rgba(183,183,181,1)' }}>
+                      {item?.author?.name} | {item?.genre}
+                    </span>
                     </>
                   )}
-                  description={item?.description}
+                  description={(
+                    <>
+                    <Flex align='center' gap="middle">
+                      <Flex align='center'>
+                        <Image src={item?.image} />
+                      </Flex>
+                      <span >{item?.description}</span>
+                    </Flex>
+                    </>
+                  )}
                 />
               </Card>
             </List.Item>
