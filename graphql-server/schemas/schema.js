@@ -64,7 +64,9 @@ const RootQuery = new GraphQLObjectType({
     book: {
       type: BookType,
       args: {
-        id: GraphQLID,
+        id: {
+          type: GraphQLID
+        },
       },
       resolve(parent, args) {
         return Book.findById(args?.id);
@@ -78,6 +80,11 @@ const RootQuery = new GraphQLObjectType({
     },
     author: {
       type: AuthorType,
+      args: {
+        id: {
+          type: GraphQLID
+        }
+      },
       resolve(parent, args) {
         return Author?.findById(args?.id);
       },
@@ -145,10 +152,18 @@ const Mutation = new GraphQLObjectType({
     updateAuthor: {
       type: AuthorType,
       args: {
-        id: new GraphQLNonNull(GraphQLID),
-        name: GraphQLString,
-        age: GraphQLString,
-        rating: GraphQLString,
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        },
+        name: {
+          type: GraphQLString
+        },
+        age: {
+          type: GraphQLString
+        },
+        rating: {
+          type: GraphQLString
+        },
       },
       resolve(parent, args) {
         const { name, age, rating } = args;
@@ -165,12 +180,24 @@ const Mutation = new GraphQLObjectType({
     updateBook: {
       type: BookType,
       args: {
-        id: new GraphQLNonNull(GraphQLID),
-        name: GraphQLString,
-        description: GraphQLString,
-        image: GraphQLString,
-        genre: GraphQLString,
-        authorId: GraphQLID,
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        },
+        name: {
+          type: GraphQLString
+        },
+        description: {
+          type: GraphQLString
+        },
+        image: {
+          type: GraphQLString
+        },
+        genre: {
+          type: GraphQLString
+        },
+        authorId: {
+          type: GraphQLID
+        },
       },
       resolve(parent, args) {
         const { name, description, image, genre, authorId } = args;
@@ -189,7 +216,9 @@ const Mutation = new GraphQLObjectType({
     deleteAuthor: {
       type: AuthorType,
       args: {
-        id: new GraphQLNonNull(GraphQLID),
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        },
       },
       resolve(parent, args) {
         return new Promise(async function (resolve) {
@@ -201,7 +230,9 @@ const Mutation = new GraphQLObjectType({
     deleteBook: {
       type: BookType,
       args: {
-        id: new GraphQLNonNull(GraphQLID),
+        id: {
+          type: new GraphQLNonNull(GraphQLID)
+        },
       },
       resolve(parent, args) {
         return new Promise(async function (reslve) {
