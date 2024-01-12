@@ -6,6 +6,7 @@ function App() {
 	const GET_BOOKS = gql`
 		query GetBooks {
 			books {
+        _id
 				name
 				description
 				image
