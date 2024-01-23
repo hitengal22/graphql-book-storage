@@ -1,7 +1,9 @@
-import { gql, useQuery } from '@apollo/client';
+import { useEffect, useState } from 'react'
+import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import { Form, Input, Select, Space, Button, } from 'antd'
 export default function UpdateBook({ onCloseModal, id, refetch }) {
-  console.log("id",id)
+  const [authorsData, setAuthorsData] = useState([]);
+  const [bookData, setBookData] = useState([]);
   const { TextArea } =  Input
   const [form] = Form.useForm()
 
@@ -22,10 +24,31 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
     }
   `
 
-  const { data: bookDetail } = useQuery(GET_BOOK_DETAIL, {
-    variables: { id }
-  });
-  console.log("bookDetail", bookDetail);
+  const UPDATE_BOOK_DETAIL = gql`
+    mutation UpdateBookDetail(
+      $id: ID!
+      $name: String!
+      $image: String!
+      $description: String!
+      $genre: String!
+      $authorId: ID!
+    ){
+      updateBook(
+        id: $id
+        name: $name
+        image: $image
+        description: $description
+        genre: $genre
+        authorId: $authorId
+      ){
+        _id
+        name
+      }
+    }
+  `
+
+  const [ GetBookDetails, { data } ] = useLazyQuery(GET_BOOK_DETAIL);
+  const [ updateBook, { loading: submitLoading, reset } ] = useMutation(UPDATE_BOOK_DETAIL);
 
   const tailLayout = {
     wrapperCol: { offset: 6, span: 16 },
@@ -33,12 +56,50 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
 
   const onFinish = (values) => {
     form.resetFields()
-    // addBook({ variables: values })
-    // refetchAuthors()
-    // refetch()
-    // reset()
-    // onCloseModal()
+    values = { ...values, id }
+    updateBook({ variables: values })
+    refetch()
+    reset()
+    onCloseModal()
   }
+
+  useEffect(() => {
+    GetBookDetails({
+      variables: {
+        id
+      }
+    })
+  }, [id]);
+
+  useEffect(() => {
+		if (data?.authors?.length > 0) {
+			let authorsList = []
+			data?.authors?.forEach((item) => {
+				const obj = {
+					value: item?._id,
+					label: item?.name,
+				}
+				authorsList.push(obj)
+			})
+			setAuthorsData(authorsList)
+		}
+	}, [data?.authors])
+
+  useEffect(() => {
+    if (data?.book) {
+      let fields = []
+      for (var bookKey in data?.book) {
+        if (data?.book.hasOwnProperty(bookKey)) {
+          const obj = {
+            name: [`${bookKey}`],
+            value: data?.book[bookKey]
+          }
+          fields.push(obj);
+        }
+      }
+      setBookData(fields);
+    }
+  }, [data?.book]);
 
 
   return (
@@ -47,6 +108,7 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
       wrapperCol={{ span: 16 }}
       size={`default`}
       form={form}
+      fields={bookData}
       onFinish={onFinish}
     >
     <Form.Item label={`Name`} name={`name`} rules={[{ required: true }]}>
@@ -58,7 +120,7 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
     </Form.Item>
 
     <Form.Item label={`Author`} name={`authorId`} rules={[{ required: true }]}>
-      <Select options={[]} />
+      <Select options={authorsData || []} />
     </Form.Item>
 
     <Form.Item label={`Description`} name={`description`} rules={[{ required: true }]}>
@@ -94,7 +156,7 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
 
     <Form.Item {...tailLayout}>
       <Space>
-        <Button type='primary' htmlType='submit' loading={false}>
+        <Button type='primary' htmlType='submit' loading={submitLoading}>
           Submit
         </Button>
       </Space>

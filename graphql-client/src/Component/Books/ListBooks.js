@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { Card, List, Layout, Button, Flex, Modal, Image } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons';
 import AddBook from './AddBooks'
 import UpdateBook from './UpdateBook'
 
@@ -14,7 +15,6 @@ export default function ListBooks({ loading, books, refetch }) {
 	}, [setOpen])
 
   const showEditModal = useCallback((id) => {
-    console.log("Changge  s", id)
     setOpenEdit(true)
     setEditId(id)
   }, [setOpenEdit])
@@ -73,6 +73,9 @@ export default function ListBooks({ loading, books, refetch }) {
   											</span>
                       </div>
                       <div>
+												<Button type="link">
+													<DeleteOutlined style={{ color: "red" }} />
+												</Button>
                         <Button type="link" onClick={() => {
                           showEditModal(item?._id)
                         }}>
