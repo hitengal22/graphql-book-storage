@@ -1,33 +1,59 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import { gql, useMutation } from '@apollo/client'
 import { Card, List, Layout, Button, Flex, Modal, Image } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons'
 import AddBook from './AddBooks'
 import UpdateBook from './UpdateBook'
 
 export default function ListBooks({ loading, books, refetch }) {
+	const DELETE_BOOK = gql`
+		mutation DeleteBook($id: ID!) {
+			deleteBook(id: $id) {
+				_id
+			}
+		}
+	`
 	const [open, setOpen] = useState(false)
-  const [openEdit, setOpenEdit] = useState(false)
-  const [editId, setEditId] = useState(null)
+	const [openEdit, setOpenEdit] = useState(false)
+	const [editId, setEditId] = useState(null)
+	const [
+		deleteBook,
+		{
+			loading: deleteBookLoading,
+			error: deleteBookError,
+			data: deleteBookData,
+			reset: deleteBookReset,
+		},
+	] = useMutation(DELETE_BOOK)
 
 	const { Meta } = Card
 	const showModal = useCallback(() => {
 		setOpen(true)
 	}, [setOpen])
 
-  const showEditModal = useCallback((id) => {
-    setOpenEdit(true)
-    setEditId(id)
-  }, [setOpenEdit])
+	const showEditModal = useCallback(
+		(id) => {
+			setOpenEdit(true)
+			setEditId(id)
+		},
+		[setOpenEdit],
+	)
 
 	const handleCancel = useCallback(() => {
 		setOpen(false)
 	}, [setOpen])
 
-  const handleEditCancelButton = useCallback(() => {
-    setOpenEdit(false)
-    setEditId(null)
-  }, [setOpenEdit])
+	const handleEditCancelButton = useCallback(() => {
+		setOpenEdit(false)
+		setEditId(null)
+	}, [setOpenEdit])
 
+	useEffect(() => {
+		if (deleteBookData && !deleteBookLoading && !deleteBookError) {
+			refetch()
+			deleteBookReset()
+		}
+	}, [deleteBookData, deleteBookLoading, deleteBookError])
 	return (
 		<>
 			<Flex stye={{ width: '100%' }} justify={`space-between`} align={`center`}>
@@ -58,30 +84,38 @@ export default function ListBooks({ loading, books, refetch }) {
 							>
 								<Meta
 									title={
-										<Flex justify="space-between">
-                      <div>
-  											<span>{item?.name}</span>
-  											<br />
-  											<span
-  												style={{
-  													fontWeight: 300,
-  													fontSize: '14px',
-  													color: 'rgba(183,183,181,1)',
-  												}}
-  											>
-  												{item?.author?.name} | {item?.genre}
-  											</span>
-                      </div>
-                      <div>
-												<Button type="link">
-													<DeleteOutlined style={{ color: "red" }} />
+										<Flex justify='space-between'>
+											<div>
+												<span>{item?.name}</span>
+												<br />
+												<span
+													style={{
+														fontWeight: 300,
+														fontSize: '14px',
+														color: 'rgba(183,183,181,1)',
+													}}
+												>
+													{item?.author?.name} | {item?.genre}
+												</span>
+											</div>
+											<div>
+												<Button
+													type='link'
+													onClick={() => {
+														deleteBook({ variables: { id: item?._id } })
+													}}
+												>
+													<DeleteOutlined style={{ color: 'red' }} />
 												</Button>
-                        <Button type="link" onClick={() => {
-                          showEditModal(item?._id)
-                        }}>
-                          Edit
-                        </Button>
-                      </div>
+												<Button
+													type='link'
+													onClick={() => {
+														showEditModal(item?._id)
+													}}
+												>
+													Edit
+												</Button>
+											</div>
 										</Flex>
 									}
 									description={
@@ -105,7 +139,7 @@ export default function ListBooks({ loading, books, refetch }) {
 				<AddBook onCloseModal={handleCancel} refetch={refetch} />
 			</Modal>
 
-      <Modal open={openEdit} title={`Update Book`} onCancel={handleEditCancelButton} footer={null}>
+			<Modal open={openEdit} title={`Update Book`} onCancel={handleEditCancelButton} footer={null}>
 				<UpdateBook onCloseModal={handleEditCancelButton} id={editId} refetch={refetch} />
 			</Modal>
 		</>
