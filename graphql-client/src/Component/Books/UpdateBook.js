@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
-import { Form, Input, Select, Space, Button } from 'antd'
+import { Form, Input, Select, Space, Button, Spin } from 'antd'
 export default function UpdateBook({ onCloseModal, id, refetch }) {
 	const [authorsData, setAuthorsData] = useState([])
 	const [bookData, setBookData] = useState([])
@@ -47,7 +47,7 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
 		}
 	`
 
-	const [GetBookDetails, { data }] = useLazyQuery(GET_BOOK_DETAIL)
+	const [GetBookDetails, { data, loading: bookLoading }] = useLazyQuery(GET_BOOK_DETAIL)
 	const [updateBook, { loading: submitLoading, reset }] = useMutation(UPDATE_BOOK_DETAIL)
 
 	const tailLayout = {
@@ -102,6 +102,8 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
 	}, [data?.book])
 
 	return (
+		<>
+		<Spin size={'large'} fullscreen={true} spinning={bookLoading} />
 		<Form
 			labelCol={{ span: 6 }}
 			wrapperCol={{ span: 16 }}
@@ -161,5 +163,6 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
 				</Space>
 			</Form.Item>
 		</Form>
+		</>
 	)
 }

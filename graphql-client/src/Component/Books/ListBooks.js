@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { gql, useMutation } from '@apollo/client'
-import { Card, List, Layout, Button, Flex, Modal, Image } from 'antd'
+import { Card, List, Layout, Button, Flex, Modal, Image, Popconfirm } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import AddBook from './AddBooks'
 import UpdateBook from './UpdateBook'
@@ -99,14 +99,24 @@ export default function ListBooks({ loading, books, refetch }) {
 												</span>
 											</div>
 											<div>
-												<Button
-													type='link'
-													onClick={() => {
+												<Popconfirm
+													title="Delete the book"
+													description="Are you sure to delete this book?"
+													onConfirm={() => {
 														deleteBook({ variables: { id: item?._id } })
 													}}
+													okText="Yes"
+													cancelText="No"
 												>
-													<DeleteOutlined style={{ color: 'red' }} />
-												</Button>
+													<Button
+														type='link'
+														onClick={() => {
+															deleteBook({ variables: { id: item?._id } })
+														}}
+													>
+														<DeleteOutlined style={{ color: 'red' }} />
+													</Button>
+												</Popconfirm>
 												<Button
 													type='link'
 													onClick={() => {

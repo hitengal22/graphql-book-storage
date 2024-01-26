@@ -223,6 +223,7 @@ const Mutation = new GraphQLObjectType({
       resolve(parent, args) {
         return new Promise(async function (resolve) {
           const authorResponse = await Author.findByIdAndDelete(args?.id);
+          await Book.deleteMany({ authorId: args?.id });
           return resolve(authorResponse);
         });
       },
