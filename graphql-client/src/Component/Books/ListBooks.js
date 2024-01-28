@@ -100,13 +100,13 @@ export default function ListBooks({ loading, books, refetch }) {
 											</div>
 											<div>
 												<Popconfirm
-													title="Delete the book"
-													description="Are you sure to delete this book?"
+													title='Delete the book'
+													description='Are you sure to delete this book?'
 													onConfirm={() => {
 														deleteBook({ variables: { id: item?._id } })
 													}}
-													okText="Yes"
-													cancelText="No"
+													okText='Yes'
+													cancelText='No'
 												>
 													<Button
 														type='link'

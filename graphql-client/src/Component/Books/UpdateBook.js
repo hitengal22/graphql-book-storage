@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
-import { Form, Input, Select, Space, Button, Spin } from 'antd'
+import { Form, Input, Select, Space, Button, Spin, message } from 'antd'
+
 export default function UpdateBook({ onCloseModal, id, refetch }) {
 	const [authorsData, setAuthorsData] = useState([])
 	const [bookData, setBookData] = useState([])
+	const [messageApi, contextHolder] = message.useMessage()
 	const { TextArea } = Input
 	const [form] = Form.useForm()
 
@@ -58,6 +60,10 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
 		form.resetFields()
 		values = { ...values, id }
 		updateBook({ variables: values })
+		messageApi.open({
+			type: 'success',
+			content: 'Book update Successfuly',
+		})
 		refetch()
 		reset()
 		onCloseModal()
@@ -103,66 +109,67 @@ export default function UpdateBook({ onCloseModal, id, refetch }) {
 
 	return (
 		<>
-		<Spin size={'large'} fullscreen={true} spinning={bookLoading} />
-		<Form
-			labelCol={{ span: 6 }}
-			wrapperCol={{ span: 16 }}
-			size={`default`}
-			form={form}
-			fields={bookData}
-			onFinish={onFinish}
-		>
-			<Form.Item label={`Name`} name={`name`} rules={[{ required: true }]}>
-				<Input />
-			</Form.Item>
+			{contextHolder}
+			<Spin size={'large'} fullscreen={true} spinning={bookLoading} />
+			<Form
+				labelCol={{ span: 6 }}
+				wrapperCol={{ span: 16 }}
+				size={`default`}
+				form={form}
+				fields={bookData}
+				onFinish={onFinish}
+			>
+				<Form.Item label={`Name`} name={`name`} rules={[{ required: true }]}>
+					<Input />
+				</Form.Item>
 
-			<Form.Item label={`Image`} name={`image`} rules={[{ required: true }]}>
-				<Input />
-			</Form.Item>
+				<Form.Item label={`Image`} name={`image`} rules={[{ required: true }]}>
+					<Input />
+				</Form.Item>
 
-			<Form.Item label={`Author`} name={`authorId`} rules={[{ required: true }]}>
-				<Select options={authorsData || []} />
-			</Form.Item>
+				<Form.Item label={`Author`} name={`authorId`} rules={[{ required: true }]}>
+					<Select options={authorsData || []} />
+				</Form.Item>
 
-			<Form.Item label={`Description`} name={`description`} rules={[{ required: true }]}>
-				<TextArea rows={3} />
-			</Form.Item>
+				<Form.Item label={`Description`} name={`description`} rules={[{ required: true }]}>
+					<TextArea rows={3} />
+				</Form.Item>
 
-			<Form.Item label={`Genre`} name={`genre`} rules={[{ required: true }]}>
-				<Select
-					options={[
-						{
-							value: 'Fantacy',
-							label: 'Fantacy',
-						},
-						{
-							value: 'Sci-Fi',
-							label: 'Sci-Fi',
-						},
-						{
-							value: 'Fiction',
-							label: 'Fiction',
-						},
-						{
-							value: 'Horror',
-							label: 'Horror',
-						},
-						{
-							value: 'Thriller',
-							label: 'Thriller',
-						},
-					]}
-				/>
-			</Form.Item>
+				<Form.Item label={`Genre`} name={`genre`} rules={[{ required: true }]}>
+					<Select
+						options={[
+							{
+								value: 'Fantacy',
+								label: 'Fantacy',
+							},
+							{
+								value: 'Sci-Fi',
+								label: 'Sci-Fi',
+							},
+							{
+								value: 'Fiction',
+								label: 'Fiction',
+							},
+							{
+								value: 'Horror',
+								label: 'Horror',
+							},
+							{
+								value: 'Thriller',
+								label: 'Thriller',
+							},
+						]}
+					/>
+				</Form.Item>
 
-			<Form.Item {...tailLayout}>
-				<Space>
-					<Button type='primary' htmlType='submit' loading={submitLoading}>
-						Submit
-					</Button>
-				</Space>
-			</Form.Item>
-		</Form>
+				<Form.Item {...tailLayout}>
+					<Space>
+						<Button type='primary' htmlType='submit' loading={submitLoading}>
+							Submit
+						</Button>
+					</Space>
+				</Form.Item>
+			</Form>
 		</>
 	)
 }

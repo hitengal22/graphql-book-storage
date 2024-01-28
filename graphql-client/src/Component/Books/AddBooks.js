@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { gql, useQuery, useMutation } from '@apollo/client'
-import { Form, Input, Select, Space, Button } from 'antd'
+import { Form, Input, Select, Space, Button, message } from 'antd'
 
 export default function AddBook({ onCloseModal, refetch }) {
 	const [form] = Form.useForm()
 	const [authorsData, setAuthorsData] = useState([])
 	const { TextArea } = Input
+	const [messageApi, contextHolder] = message.useMessage()
 
 	const GET_AUTHORS = gql`
 		query GetAuthor {
@@ -46,6 +47,10 @@ export default function AddBook({ onCloseModal, refetch }) {
 	const onFinish = (values) => {
 		form.resetFields()
 		addBook({ variables: values })
+		messageApi.open({
+			type: 'success',
+			content: 'Book added Successfuly',
+		})
 		refetchAuthors()
 		refetch()
 		reset()

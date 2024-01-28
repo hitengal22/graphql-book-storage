@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input, Space, Button, Spin, message } from 'antd'
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 
-export default function AuthorModal({ onCloseModal, refetch, id, reset: resetState, setReset}) {
+export default function AuthorModal({ onCloseModal, refetch, id, reset: resetState, setReset }) {
 	const ADD_FORM = gql`
 		mutation AddAuthor($name: String!, $age: String!, $rating: String!) {
 			addAuthor(name: $name, age: $age, rating: $rating) {
@@ -14,8 +14,8 @@ export default function AuthorModal({ onCloseModal, refetch, id, reset: resetSta
 	`
 
 	const GET_AUTHOR = gql`
-		query GetAuthor($id: ID!){
-			author(id:$id){
+		query GetAuthor($id: ID!) {
+			author(id: $id) {
 				_id
 				name
 				name
@@ -27,18 +27,19 @@ export default function AuthorModal({ onCloseModal, refetch, id, reset: resetSta
 
 	const UPDATE_AUTHOR = gql`
 		mutation UpdateAuthor($id: ID!, $name: String!, $age: String!, $rating: String!) {
-			updateAuthor(id: $id, name: $name, age: $age, rating: $rating){
+			updateAuthor(id: $id, name: $name, age: $age, rating: $rating) {
 				_id
 			}
 		}
 	`
 
 	const [addAuthor, { loading, error, reset }] = useMutation(ADD_FORM)
-	const [updateAuthor, { loading: updateAuthorLoading, error: updateAuthorError }] = useMutation(UPDATE_AUTHOR)
+	const [updateAuthor, { loading: updateAuthorLoading, error: updateAuthorError }] =
+		useMutation(UPDATE_AUTHOR)
 	const [getAuthor, { data: authorDataQuery, loading: authorLoading }] = useLazyQuery(GET_AUTHOR)
-	const [authorData, setAuthorData] = useState([]);
+	const [authorData, setAuthorData] = useState([])
 
-	const [messageApi, contextHolder] = message.useMessage();
+	const [messageApi, contextHolder] = message.useMessage()
 
 	const [form] = Form.useForm()
 
@@ -55,7 +56,7 @@ export default function AuthorModal({ onCloseModal, refetch, id, reset: resetSta
 		}
 		messageApi.open({
 			type: 'success',
-			content: id ? 'Author Updates Successfuly' : 'Author Added Successfuly'
+			content: id ? 'Author Updates Successfuly' : 'Author Added Successfuly',
 		})
 		form.resetFields()
 		reset()
@@ -65,16 +66,16 @@ export default function AuthorModal({ onCloseModal, refetch, id, reset: resetSta
 
 	useEffect(() => {
 		if (id) {
-			getAuthor({ variables: { id } });
+			getAuthor({ variables: { id } })
 		} else {
-			setAuthorData([]);
+			setAuthorData([])
 		}
-	}, [id]);
+	}, [id])
 
 	useEffect(() => {
 		if (resetState) {
-			setAuthorData([]);
-			setReset(false);
+			setAuthorData([])
+			setReset(false)
 		}
 	}, [resetState])
 
@@ -98,7 +99,7 @@ export default function AuthorModal({ onCloseModal, refetch, id, reset: resetSta
 		if (error || updateAuthorError) {
 			messageApi.open({
 				type: 'error',
-				content: error?.message || updateAuthorError?.message
+				content: error?.message || updateAuthorError?.message,
 			})
 			reset()
 		}
