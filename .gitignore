@@ -1,5 +1,7 @@
 graphql-server/node_modules
 graphql-server/package-lock.json
 graphql-client/node_modules
+graphql-client/build
+graphql-client/dist
 graphql-client/package-lock.json
 graphql-client/.token
